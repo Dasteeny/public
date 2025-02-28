@@ -7,6 +7,7 @@ from utils import (
     split_nodes_delimiter,
     split_nodes_image,
     split_nodes_link,
+    text_to_textnodes,
 )
 
 
@@ -233,6 +234,82 @@ class TestSplitNodeLink(unittest.TestCase):
             [TextNode("This is just a text.", TextType.TEXT)],
             new_nodes,
         )
+
+
+class TestTextToTextnodes(unittest.TestCase):
+    def test_text_to_textnode(self):
+        self.assertEqual(
+            text_to_textnodes(
+                "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+            ),
+            [
+                TextNode("This is ", TextType.TEXT),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.TEXT),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode(
+                    "obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"
+                ),
+                TextNode(" and a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+            ],
+        )
+
+    def test_text_to_textnode_only_text(self):
+        self.assertEqual(
+            text_to_textnodes("This is a text."),
+            [
+                TextNode("This is a text.", TextType.TEXT),
+            ],
+        )
+
+    def test_text_to_textnode_only_bold(self):
+        self.assertEqual(
+            text_to_textnodes("**This is a BOLD text.**"),
+            [
+                TextNode("This is a BOLD text.", TextType.BOLD),
+            ],
+        )
+
+    def test_text_to_textnode_only_italic(self):
+        self.assertEqual(
+            text_to_textnodes("_This is a ITALIC text._"),
+            [
+                TextNode("This is a ITALIC text.", TextType.ITALIC),
+            ],
+        )
+
+    def test_text_to_textnode_only_code(self):
+        self.assertEqual(
+            text_to_textnodes("`This is a CODE block.`"),
+            [
+                TextNode("This is a CODE block.", TextType.CODE),
+            ],
+        )
+
+    def test_text_to_textnode_only_image(self):
+        self.assertEqual(
+            text_to_textnodes("![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg)"),
+            [
+                TextNode(
+                    "obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"
+                ),
+            ],
+        )
+
+    def test_text_to_textnode_only_link(self):
+        self.assertEqual(
+            text_to_textnodes("[link](https://boot.dev)"),
+            [
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+            ],
+        )
+
+    def test_text_to_textnode_no_text(self):
+        self.assertEqual(text_to_textnodes(""), [])
 
 
 if __name__ == "__main__":

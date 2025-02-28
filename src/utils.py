@@ -85,3 +85,18 @@ def split_nodes_by_functor(
             new_nodes.append(TextNode(text_to_process, TextType.TEXT))
 
     return new_nodes
+
+
+def text_to_textnodes(text: str):
+    nodes = [TextNode(text, TextType.TEXT)]
+    for text_type, delimiter in [
+        (TextType.BOLD, "**"),
+        (TextType.CODE, "`"),
+        (TextType.ITALIC, "_"),
+    ]:
+        nodes = split_nodes_delimiter(nodes, delimiter, text_type)
+
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+
+    return nodes
