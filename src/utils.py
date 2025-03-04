@@ -33,8 +33,8 @@ def extract_markdown_images(text: str):
 
 
 def extract_markdown_links(text: str):
-    pattern = r"(?<!!)\[([\w\s]+)\]\(([\w:/.@]+)\)"
-    # pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    # pattern = r"(?<!!)\[([\w\s]+)\]\(([\w:/.@]+)\)"
+    pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
     return re.findall(pattern, text)
 
 
